@@ -1,23 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import LoginPage from "./pages/LoginPage/LoginPage";
+import { Routes, Route, Navigate } from "react-router-dom";
+import PrivateRoutesStaff from "./utils/PrivateRoutesStaff";
+import PrivateRoutesStudent from "./utils/PrivateRoutesStudent";
+import PrivateRoutes from "./utils/PrivateRoutes";
+import StudentPage from "./pages/StudentPage/StudentPage";
+import StaffPage from "./pages/StaffPage/StaffPage";
+import ElectivePage from "./pages/ElectivePage/ElectivePage";
 
 function App() {
+  let user = JSON.parse(localStorage.getItem('user'))
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Routes>
+        <Route path="/" element={!user ? <LoginPage /> : <Navigate to ={user.isStaff ? '/staff/' : '/student/'} replace = {true}/>} />
+        <Route element = {<PrivateRoutesStaff/>}>
+          <Route path = "/staff/*" element = {<StaffPage/>}/>
+        </Route>
+        <Route element = {<PrivateRoutesStudent/>}>
+          <Route path = "/student/*" element = {<StudentPage/>}/>
+        </Route>
+        <Route element = {<PrivateRoutes/>}>
+          <Route path = "/elective/:electiveName/*" element = {<ElectivePage/>}/>
+        </Route>
+      </Routes>
     </div>
   );
 }
